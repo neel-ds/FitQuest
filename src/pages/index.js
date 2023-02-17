@@ -14,6 +14,7 @@ export default function Home() {
       <main className="px-4 md:px-0 mx-auto max-w-[1080px] h-[calc(100vh-143px)]">
         <div className="md:text-left flex justify-center flex-row">
           <div className="flex flex-col justify-center">
+            <Image src="/grid-pattern.svg" width="550" height="500" alt="Banner" className="absolute overflow-hidden" />
             <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
               <span className="block xl:inline text-[#E3FED8]">Welcome to</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#35B226] to-[#E3FED8] pb-4">
