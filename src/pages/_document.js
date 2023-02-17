@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body>
+      <body className="bg-[#161515] bg-[url('../assets/grid-pattern.svg')] bg-no-repeat bg-cover bg-center bg-fixed">
         <Main />
         <NextScript />
       </body>
