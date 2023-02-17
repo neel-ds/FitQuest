@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useRouter } from "next/router";
+import { ConnectKitButton } from 'connectkit'
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -20,7 +21,7 @@ const Header = () => {
             </span>
           </Link>
           <div className="flex md:order-2" style={{ marginLeft: "2rem" }}>
-            <button className="text-[#35B226]">Connect wallet</button>
+            <ConnectKitButton/>
             <button
               data-collapse-toggle="mobile-menu-4"
               type="button"
