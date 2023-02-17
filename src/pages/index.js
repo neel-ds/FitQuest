@@ -28,7 +28,7 @@ export default function Home() {
             </p>
             <div className="mt-5 sm:mt-8 sm:flex lg:justify-start md:flex-col lg:flex-row">
               <div>
-                <Link href="/producthistory" className="w-full md:w-[70%] lg:w-full flex items-center justify-center px-8 py-3 border-0 border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-[#E3FED8] via-[#35B226] to-[#9FE598] hover:drop-shadow-[0_3px_5px_#7d7d7d] md:py-2 md:text-lg md:px-8"
+                <Link href="/dashboard" className="w-full md:w-[70%] lg:w-full flex items-center justify-center px-8 py-3 border-0 border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-[#E3FED8] via-[#35B226] to-[#9FE598] hover:drop-shadow-[0_3px_5px_#7d7d7d] md:py-2 md:text-lg md:px-8"
                   >Explore</Link>
               </div>
             </div>
