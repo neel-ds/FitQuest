@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 const Card = ({ title, desc, img, price }) => {
   return (
-    <div className="w-full md:w-1/3 bg-[#E3FED8] rounded overflow-hidden shadow-lg">
+    <div className="w-full md:w-1/3 bg-[#E3FED8]/60 rounded overflow-hidden shadow-lg">
       <div className="pt-5">
         <SubTitle title={title} color="dark" />
       </div>
