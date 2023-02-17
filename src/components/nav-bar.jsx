@@ -78,6 +78,19 @@ const Header = () => {
               </li>
               <li>
                 <Link
+                  href="/fitness"
+                  className={`${
+                    pathname === "/fitness"
+                      ? "text-[#35B226]"
+                      : "text-[#E3FED8]"
+                  } block py-2 pr-4 pl-3 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-[#9FE598] md:p-0`}
+                  aria-current="page"
+                >
+                  <b>Fitness</b>
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/wellness"
                   className={`${
                     pathname === "/wellness"
@@ -89,21 +102,11 @@ const Header = () => {
                   <b>Wellness</b>
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/profile"
-                  className={`${
-                    pathname === "/profile"
-                      ? "text-[#35B226]"
-                      : "text-[#E3FED8]"
-                  } block py-2 pr-4 pl-3 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-[#9FE598] md:p-0`}
-                  aria-current="page"
-                >
-                  <b>Profile</b>
-                </Link>
-              </li>
             </ul>
           </div>
+        </div>
+        <div className="flex pt-[30px]">
+          <marquee className="text-[#E3FED8]" behavior="scroll" direction="left" width="100%">00100 11001001010 1110101000101 00100 11001001010 1110101000101 00100 11001001010 1110101000101 00100 11001001010 1110101000101 00100 11001001010 1110101000101 00100 11001001010 1110101000101 00100 11001001010 1110101000101 00100 11001001010 1110101000101</marquee>
         </div>
       </nav>
     </>
