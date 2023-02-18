@@ -17,23 +17,20 @@ const Card = ({ title, desc, img, price }) => {
   const { address } = useAccount()
 
   const toast = useToast();
-  console.log(bronzeNFTAddress);
-  console.log(address);
 
-  const { config } = usePrepareContractWrite({
+  const { config:silver } = usePrepareContractWrite({
     address: bronzeNFTAddress,
     abi: BronzeABI,
     functionName: "mint",
   });
 
-  const { data, write } = useContractWrite(config);
-  const { isLoading, isSuccess, error } = useWaitForTransaction({
-    hash: data?.hash,
+  const { data:silverData, write:silverWrite } = useContractWrite(silver);
+  const { isSuccess: isSilverSuccess } = useWaitForTransaction({
+    hash: silverData?.hash,
   });
-  console.log(error);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSilverSuccess) {
       toast({
         title: "NFT Minted",
         description: "NFT has been minted successfully",
@@ -42,7 +39,7 @@ const Card = ({ title, desc, img, price }) => {
         isClosable: true,
       });
     }
-  }, [isSuccess]);
+  }, [isSilverSuccess]);
 
   return (
     <div className="w-full md:w-1/3 bg-[#E3FED8]/60 rounded overflow-hidden shadow-lg">
@@ -60,7 +57,7 @@ const Card = ({ title, desc, img, price }) => {
         <div className="flex justify-center pb-5">
           <button
             onClick={() => {
-              write();
+              silverWrite();
             }}
             className="w-[50%] flex items-center justify-center px-8 py-3 border-0 border-transparent text-base font-medium rounded-md text-white bg-[#35B226] hover:drop-shadow-[0_3px_5px_#7d7d7d] md:py-2 md:text-lg md:px-8">Buy</button>
         </div>
