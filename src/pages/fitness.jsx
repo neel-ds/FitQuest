@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import Title from '@/components/title'
 import SubTitle from '@/components/sub-title'
 import GoalCard from '@/components/goal-card'
@@ -26,6 +27,11 @@ function Fitness() {
                 <SubTitle title='Calories' color="dark" />
                 <GoalCard title="Weekly Calories Goal" amount={100} type="Calories" />
               </div>
+            </div>
+            <div className="flex justify-center">
+              <Link href='/dashboard' className="bg-[#08EA70] text-[#4F4F4F] font-bold py-2 px-4 rounded-full mt-7">
+                Join League
+              </Link>
             </div>
           </div>
         </div>
