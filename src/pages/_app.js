@@ -3,7 +3,8 @@ import Footer from "@/components/footer";
 import "@/styles/globals.css";
 import { WagmiConfig } from 'wagmi'
 import { ConnectKitProvider } from 'connectkit'
-import { client } from '../wagmi'
+import { client } from '../utils/wagmi'
+// import { client } from '../utils/arcana'
 import { ChakraProvider } from "@chakra-ui/react";
 
 export default function App({ Component, pageProps }) {
