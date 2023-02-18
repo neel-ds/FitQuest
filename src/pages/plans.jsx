@@ -13,7 +13,7 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-const Card = ({ title, desc, img, price }) => {
+const Card = ({ title, desc, img, price}) => {
   const { address } = useAccount()
 
   const toast = useToast();
@@ -29,17 +29,63 @@ const Card = ({ title, desc, img, price }) => {
     hash: silverData?.hash,
   });
 
+  const { config:gold } = usePrepareContractWrite({
+    address: "0xb4DADBEcd053201Ce20ed88C382050592DFc7098",
+    abi: BronzeABI,
+    functionName: "mint",
+  });
+
+  const { data:goldData, write:goldWrite } = useContractWrite(gold);
+  const { isSuccess: isGoldSuccess } = useWaitForTransaction({
+    hash: goldData?.hash,
+  });
+
+  const { config:platinum } = usePrepareContractWrite({
+    address: "0xdCC180F28DD60B5DBCE7e5797bA154E362e1b780",
+    abi: BronzeABI,
+    functionName: "mint",
+  });
+
+  const { data:platinumData, write:platinumWrite } = useContractWrite(platinum);
+  const { isSuccess: isPlatinumSuccess } = useWaitForTransaction({
+    hash: platinumData?.hash,
+  });
+
   useEffect(() => {
     if (isSilverSuccess) {
       toast({
-        title: "NFT Minted",
-        description: "NFT has been minted successfully",
+        title: "Silver NFT Minted",
+        description: "Silver NFT has been minted successfully",
         status: "success",
         duration: 9000,
         isClosable: true,
       });
     }
   }, [isSilverSuccess]);
+
+  useEffect(() => {
+    if (isGoldSuccess) {
+      toast({
+        title: "Gold NFT Minted",
+        description: "Silver NFT has been minted successfully",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [isGoldSuccess]);
+
+  useEffect(() => {
+    if (isPlatinumSuccess) {
+      toast({
+        title: "Platinum NFT Minted",
+        description: "Platinum NFT has been minted successfully",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [isPlatinumSuccess]);
 
   return (
     <div className="w-full md:w-1/3 bg-[#E3FED8]/60 rounded overflow-hidden shadow-lg">
@@ -57,7 +103,18 @@ const Card = ({ title, desc, img, price }) => {
         <div className="flex justify-center pb-5">
           <button
             onClick={() => {
-              silverWrite();
+              if (title == 'Silver') {
+                silverWrite();
+              }
+              else if (title == 'Gold') {
+                goldWrite();
+              }
+              else if (title == 'Platinum') {
+                platinumWrite();
+              }
+              else {
+                console.log("Incorrect");
+              }
             }}
             className="w-[50%] flex items-center justify-center px-8 py-3 border-0 border-transparent text-base font-medium rounded-md text-white bg-[#35B226] hover:drop-shadow-[0_3px_5px_#7d7d7d] md:py-2 md:text-lg md:px-8">Buy</button>
         </div>
@@ -81,9 +138,9 @@ function Plans() {
           <Title title="Plans" />
           <div className="space-y-2 mt-5">
             <div className="md:space-x-2 space-y-2 md:space-y-0 flex flex-col md:flex-row">
-              <Card title="Silver" desc="Exercise and cardio consistently" img="/muscle.png" price={100} />
-              <Card title="Gold" desc="More contribution towards wellness" img="/mental-health.png" price={200} />
-              <Card title="Platinum" desc="You only live once, do meditation" img="/heart.jpg" price={300} />
+              <Card title="Silver" desc="Exercise and cardio consistently" img="/muscle.png" price={100}/>
+              <Card title="Gold" desc="More contribution towards wellness" img="/mental-health.png" price={200}/>
+              <Card title="Platinum" desc="You only live once, do meditation" img="/heart.jpg" price={300}/>
             </div>
           </div>
         </div>
