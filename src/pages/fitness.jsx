@@ -3,8 +3,71 @@ import Link from 'next/link'
 import Title from '@/components/title'
 import SubTitle from '@/components/sub-title'
 import GoalCard from '@/components/goal-card'
+import { Framework } from "@superfluid-finance/sdk-core";
+import { ethers } from "ethers";
+import {useSigner} from "wagmi";
+
+
+
 
 function Fitness() {
+  const signer = useSigner();
+  async function updateSubscription(id, address, shares) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+  
+    const signer = provider.getSigner();
+  
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const sf = await Framework.create({
+      chainId: Number(chainId),
+      provider: provider
+    });
+  
+    const superSigner = sf.createSigner({ signer: signer });
+  
+    console.log(signer);
+    console.log(await superSigner.getAddress());
+    const daix = await sf.loadSuperToken("fDAIx");
+  
+    console.log(daix);
+  
+    try {
+      const updateSubscriptionOperation = daix.updateSubscriptionUnits({
+        indexId: id,
+        subscriber: address,
+        units: shares
+        // userData?: string
+      });
+  
+      console.log("Updating your Index...");
+  
+      await updateSubscriptionOperation.exec(signer);
+  
+      console.log(
+        `Congrats - you've just updated an Index!
+           Network: Goerli
+           Super Token: DAIx
+           Index ID: ${id}
+           Subscriber: ${address}
+           Units: ${shares} units
+           
+        `
+      );
+  
+      console.log(
+        `Congrats - you've just updated your index!
+      `
+      );
+    } catch (error) {
+      console.log(
+        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+      );
+      console.error(error);
+    }
+  }
+
+ 
   return (
     <>
     <Head>
@@ -29,9 +92,12 @@ function Fitness() {
               </div>
             </div>
             <div className="flex justify-center">
-              <Link href='/dashboard' className="bg-[#08EA70] text-[#4F4F4F] font-bold py-2 px-4 rounded-full mt-7">
+              {/* <Link href='/dashboard' className="bg-[#08EA70] text-[#4F4F4F] font-bold py-2 px-4 rounded-full mt-7">
                 Join League
-              </Link>
+              </Link> */}
+              <button onClick={() => updateSubscription("607204514", "0xb814E0Dcc9dfBb5e242CbbFe367b7C59C9E9a6B0", 100)} className="bg-[#08EA70] text-[#4F4F4F] font-bold py-2 px-4 rounded-full mt-7">
+                Join League
+              </button>
             </div>
           </div>
         </div>
