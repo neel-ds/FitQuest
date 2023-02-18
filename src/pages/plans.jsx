@@ -35,8 +35,8 @@ const Card = ({ title, desc, img, price }) => {
   useEffect(() => {
     if (isSuccess) {
       toast({
-        title: "Product Added",
-        description: "Product has been added successfully",
+        title: "NFT Minted",
+        description: "NFT has been minted successfully",
         status: "success",
         duration: 9000,
         isClosable: true,
