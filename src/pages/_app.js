@@ -2,15 +2,13 @@ import Header from "@/components/nav-bar";
 import Footer from "@/components/footer";
 import "@/styles/globals.css";
 import { WagmiConfig } from 'wagmi'
-import { ConnectKitProvider } from 'connectkit'
-import { client } from '../utils/wagmi'
+import { wagmiClient } from '../utils/wagmi'
 // import { client } from '../utils/arcana'
 import { ChakraProvider } from "@chakra-ui/react";
 
 export default function App({ Component, pageProps }) {
   return (
-    <WagmiConfig client={client}>
-      <ConnectKitProvider>
+    <WagmiConfig client={wagmiClient}>
         <div className="min-h-[100vh]">
           <Header />
           <div className="px-2 sm:px-4 pt-[70px]">
@@ -20,7 +18,6 @@ export default function App({ Component, pageProps }) {
           </div>
           <Footer />
         </div>
-      </ConnectKitProvider>
     </WagmiConfig>
   );
 }

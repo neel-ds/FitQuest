@@ -3,10 +3,14 @@ import Image from "next/image";
 import { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useRouter } from "next/router";
-import { ConnectKitButton } from 'connectkit'
+import { useAccount, useConnect } from "wagmi";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const { connector, address, isConnected } = useAccount();
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect();
 
   const { pathname } = useRouter();
 
@@ -16,12 +20,16 @@ const Header = () => {
         <div className="max-w-[1080px] container flex flex-wrap justify-between items-center mx-auto">
           <Link href="/" className="flex items-center flex-1">
             <span className="flex flex-row items-center self-center text-xl font-semibold whitespace-nowrap text-[#E3FED8] hover:text-[#9FE598]">
-              <Image src="/fitquest.png" width="50" height="50" alt="FitQuest" />
+              <Image
+                src="/fitquest.png"
+                width="50"
+                height="50"
+                alt="FitQuest"
+              />
               FitQuest
             </span>
           </Link>
           <div className="flex md:order-2" style={{ marginLeft: "2rem" }}>
-            <ConnectKitButton/>
             <button
               data-collapse-toggle="mobile-menu-4"
               type="button"
@@ -67,9 +75,7 @@ const Header = () => {
                 <Link
                   href="/plans"
                   className={`${
-                    pathname === "/plans"
-                      ? "text-[#35B226]"
-                      : "text-[#E3FED8]"
+                    pathname === "/plans" ? "text-[#35B226]" : "text-[#E3FED8]"
                   } block py-2 pr-4 pl-3 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-[#9FE598] md:p-0`}
                   aria-current="page"
                 >
@@ -102,6 +108,28 @@ const Header = () => {
                   <b>Wellness</b>
                 </Link>
               </li>
+              <div className="main">
+                {isConnected && (
+                  <div className="connected-msg" color="white">
+                    Connected to {connector?.name} with address {address}
+                  </div>
+                )}
+                {!isConnected &&
+                  connectors.map((connector) => (
+                    <button
+                      className="connect-btn"
+                      disabled={!connector.ready}
+                      key={connector.id}
+                      onClick={() => connect({ connector })}
+                    >
+                      Connect to {connector.name}
+                      {isLoading &&
+                        pendingConnector?.id === connector.id &&
+                        " (connecting)"}
+                    </button>
+                  ))}
+                {error && <div>{error.message}</div>}
+              </div>
             </ul>
           </div>
         </div>
