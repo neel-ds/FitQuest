@@ -5,13 +5,17 @@ import SubTitle from '@/components/sub-title'
 import GoalCard from '@/components/goal-card'
 import { Framework } from "@superfluid-finance/sdk-core";
 import { ethers } from "ethers";
-import {useSigner} from "wagmi";
-
-
+import {useSigner,useAccount} from "wagmi";
+import { useState, useEffect } from "react";
+import { getSteps } from '@/utils/getSteps';
 
 
 function Fitness() {
   const signer = useSigner();
+  const { address } = useAccount();
+
+  
+  // https://steps-api.up.railway.app/
   async function updateSubscription(id, address, shares) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
@@ -66,6 +70,26 @@ function Fitness() {
       console.error(error);
     }
   }
+  let steps = {};
+  async function getStaticProps() {
+    const url = `https://steps-api.up.railway.app/getSteps?walletAddress=${address}`;
+    const res = await fetch(url);
+    // steps = await res.json();
+  console.log(res);
+    return res;
+  }
+  useEffect(() => {
+    let mounted = true;
+    getSteps(address)
+      .then(items => {
+        if(mounted) {
+          console.log(items);
+          // setList(items)
+        }
+      })
+    return () => mounted = false;
+  }, [])
+ 
 
  
   return (
@@ -106,5 +130,7 @@ function Fitness() {
   </>
   )
 }
+
+
 
 export default Fitness
