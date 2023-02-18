@@ -25,6 +25,7 @@ const Card = ({ title, desc, img, price }) => {
     abi: BronzeABI,
     functionName: "mint",
   });
+
   const { data, write } = useContractWrite(config);
   const { isLoading, isSuccess, error } = useWaitForTransaction({
     hash: data?.hash,
@@ -58,9 +59,8 @@ const Card = ({ title, desc, img, price }) => {
       <div className="px-6 pt-4 pb-2">
         <div className="flex justify-center pb-5">
           <button
-
             onClick={() => {
-              write?.();
+              write();
             }}
             className="w-[50%] flex items-center justify-center px-8 py-3 border-0 border-transparent text-base font-medium rounded-md text-white bg-[#35B226] hover:drop-shadow-[0_3px_5px_#7d7d7d] md:py-2 md:text-lg md:px-8">Buy</button>
         </div>
