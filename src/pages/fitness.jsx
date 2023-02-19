@@ -20,18 +20,25 @@ import {
 } from "@chakra-ui/react";
 import { useRef } from "react";
 import { useNumberStore } from "@/utils/verify";
+import { usePrepareSendTransaction, useSendTransaction } from 'wagmi'
 
 function Fitness() {
   const signer = useSigner();
   const { address } = useAccount();
   const [randomNumber, setRandomNumber] = useState();
-  const {number, setNumber} = useNumberStore();
-const [stepsCount, setStepsCount] = useState(0);
-const steps = stepsCount != 0 ? stepsCount : 1000;
+  const { number, setNumber } = useNumberStore();
+  const [stepsCount, setStepsCount] = useState(0);
+  const steps = stepsCount != 0 ? stepsCount : 1000;
   // Function to generate random 6-digit number
   function generateRandomNumber() {
     return Math.floor(Math.random() * 900000) + 100000;
   }
+
+  const { config } = usePrepareSendTransaction({
+    request: { to: address, value: ethers.BigNumber.from(1000000000000000) },
+  })
+  const { data, isLoading, isSuccess, sendTransaction } =
+    useSendTransaction(config)
 
   function generateBtn() {
     const rndNumber = generateRandomNumber();
@@ -43,8 +50,59 @@ const steps = stepsCount != 0 ? stepsCount : 1000;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const finalRef = useRef(null);
 
-  // https://steps-api.up.railway.app/
+  async function createIndex() {
+    const id = Math.floor(Math.random() * 1000000000);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+  
+    const signer = provider.getSigner();
+  
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const sf = await Framework.create({
+      chainId: Number(chainId),
+      provider: provider
+    });
+  
+    const superSigner = sf.createSigner({ signer: signer });
+  
+    console.log(signer);
+    console.log(await superSigner.getAddress());
+    const daix = await sf.loadSuperToken("fDAIx");
+  
+    console.log(daix);
+  
+    try {
+      const createIndexOperation = daix.createIndex({
+        indexId: id
+        // userData?: string
+      });
+  
+      console.log(createIndexOperation);
+      console.log(
+        `Congrats - you've just created a new Index!
+         Network: Goerli
+         Super Token: DAIx
+         Index ID: ${id}
+      `
+      );
+  
+      const result = await createIndexOperation.exec(superSigner);
+      console.log(result);
+  
+      console.log(
+        `Congrats - you've just created an index!
+      `
+      );
+    } catch (error) {
+      console.log(
+        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+      );
+      console.error(error);
+    }
+  }
+
   async function updateSubscription(id, address, shares) {
+    await createIndex();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
 
@@ -98,25 +156,77 @@ const steps = stepsCount != 0 ? stepsCount : 1000;
       console.error(error);
     }
   }
-  
+
   useEffect(() => {
-  
-   const getStepsCount = async() => { 
-    getSteps(number).then((items) => {
-    
-        console.log(items.stepsCount);
-        setStepsCount(items.stepsCount);
+    const getStepsCount = async () => {
+      getSteps(number).then((items) => {
+        setStepsCount(items?.stepsCount);
         // setList(items)
-      
-    });}
-  getStepsCount();
-  const intervalId = setInterval(() => {
-    getStepsCount()
-  }, 10000)
-  
+      });
+    };
+    getStepsCount();
+    const intervalId = setInterval(() => {
+      getStepsCount();
+    }, 10000);
+
     return () => clearInterval(intervalId);
-   
   }, []);
+
+  async function distributeFunds(id, amount) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+
+    const signer = provider.getSigner();
+
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const sf = await Framework.create({
+      chainId: Number(chainId),
+      provider: provider,
+    });
+
+    const superSigner = sf.createSigner({ signer: signer });
+
+    console.log(signer);
+    console.log(await superSigner.getAddress());
+    const daix = await sf.loadSuperToken("fDAIx");
+
+    console.log(daix);
+
+    try {
+      const distributeOperation = daix.distribute({
+        indexId: id,
+        amount: amount,
+        // userData?: string
+      });
+
+      console.log("Distributing...");
+
+      await distributeOperation.exec(signer);
+
+      console.log(
+        `Congrats - you've just distributed to an Index!
+           Network: Goerli
+           Super Token: DAIx
+           Index ID: ${id}
+           Amount: ${amount}         
+        `
+      );
+
+      console.log(
+        `Congrats - you've just distributed to your index!
+      `
+      );
+    } catch (error) {
+      console.log(
+        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+      );
+      console.error(error);
+    }
+  }
+
+  const getTokens = () => {
+
+  }
 
   return (
     <>
@@ -165,10 +275,12 @@ const steps = stepsCount != 0 ? stepsCount : 1000;
               </div>
               <div className="flex justify-center">
                 <button
-                  onClick={generateBtn}
+                  onClick={() => {
+                    sendTransaction();
+                  }}
                   class="bg-[#08EA70] text-[#4F4F4F] font-bold py-2.5 px-5 rounded-full hover:shadow-md hover:shadow-[#E3FED8]/30 mt-10"
                 >
-                  Start journey
+                  Claim your tokens
                 </button>
                 <Modal
                   finalFocusRef={finalRef}
