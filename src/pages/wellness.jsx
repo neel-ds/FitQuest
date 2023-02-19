@@ -3,10 +3,21 @@ import Title from "@/components/title";
 import SubTitle from "@/components/sub-title";
 import GoalCard from "@/components/goal-card";
 import { useNumberStore } from "@/utils/verify";
+import { useEffect } from "react";
+import { getSteps } from "@/utils/getSteps";
 
 function Wellness() {
-  const number = useNumberStore((state) => state.number);
+  const {number, setNumber} = useNumberStore();
   console.log(number);
+  useEffect(() => {
+    let mounted = true;
+    getSteps(number).then((items) => {
+      if (mounted) {
+        console.log(items);
+      }
+    });
+    return () => (mounted = false);
+  }, []);
   return (
     <>
       <Head>

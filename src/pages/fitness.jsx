@@ -26,7 +26,8 @@ function Fitness() {
   const { address } = useAccount();
   const [randomNumber, setRandomNumber] = useState();
   const {number, setNumber} = useNumberStore();
-
+const [stepsCount, setStepsCount] = useState(0);
+const steps = stepsCount != 0 ? stepsCount : 1000;
   // Function to generate random 6-digit number
   function generateRandomNumber() {
     return Math.floor(Math.random() * 900000) + 100000;
@@ -97,23 +98,24 @@ function Fitness() {
       console.error(error);
     }
   }
-  let steps = {};
-  async function getStaticProps() {
-    const url = `https://steps-api.up.railway.app/getSteps?walletAddress=${address}`;
-    const res = await fetch(url);
-    // steps = await res.json();
-    console.log(res);
-    return res;
-  }
+  
   useEffect(() => {
-    let mounted = true;
-    getSteps(address).then((items) => {
-      if (mounted) {
-        console.log(items);
+  
+   const getStepsCount = async() => { 
+    getSteps(number).then((items) => {
+    
+        console.log(items.stepsCount);
+        setStepsCount(items.stepsCount);
         // setList(items)
-      }
-    });
-    return () => (mounted = false);
+      
+    });}
+  getStepsCount();
+  const intervalId = setInterval(() => {
+    getStepsCount()
+  }, 10000)
+  
+    return () => clearInterval(intervalId);
+   
   }, []);
 
   return (
@@ -134,7 +136,7 @@ function Fitness() {
                   <SubTitle title="Steps" color="dark" />
                   <GoalCard
                     title="Weekly Steps Goal"
-                    amount={100}
+                    amount={steps}
                     type="Steps"
                   />
                 </div>
