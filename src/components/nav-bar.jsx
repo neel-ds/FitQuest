@@ -3,12 +3,30 @@ import Image from "next/image";
 import { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useRouter } from "next/router";
-import { ConnectKitButton } from 'connectkit'
+import { useAccount, useConnect } from "wagmi";
+import { useToast } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
+  const { connector, address, isConnected } = useAccount();
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect();
+
   const { pathname } = useRouter();
+
+  const toast = useToast();
+  const walletError = useEffect(() => {
+    if (!error) return;
+    toast({
+      title: "Wallet Error",
+      description: error?.message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+  }, [error]);
 
   return (
     <>
@@ -16,12 +34,16 @@ const Header = () => {
         <div className="max-w-[1080px] container flex flex-wrap justify-between items-center mx-auto">
           <Link href="/" className="flex items-center flex-1">
             <span className="flex flex-row items-center self-center text-xl font-semibold whitespace-nowrap text-[#E3FED8] hover:text-[#9FE598]">
-              <Image src="/fitquest.png" width="50" height="50" alt="FitQuest" />
+              <Image
+                src="/fitquest.png"
+                width="50"
+                height="50"
+                alt="FitQuest"
+              />
               FitQuest
             </span>
           </Link>
           <div className="flex md:order-2" style={{ marginLeft: "2rem" }}>
-            <ConnectKitButton/>
             <button
               data-collapse-toggle="mobile-menu-4"
               type="button"
@@ -37,7 +59,7 @@ const Header = () => {
               isOpenMenu ? "block" : "hidden"
             } justify-between items-center w-full md:flex md:w-auto md:order-1`}
           >
-            <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+            <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium items-center">
               <li></li>
               <li>
                 <Link
@@ -67,9 +89,7 @@ const Header = () => {
                 <Link
                   href="/plans"
                   className={`${
-                    pathname === "/plans"
-                      ? "text-[#35B226]"
-                      : "text-[#E3FED8]"
+                    pathname === "/plans" ? "text-[#35B226]" : "text-[#E3FED8]"
                   } block py-2 pr-4 pl-3 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-[#9FE598] md:p-0`}
                   aria-current="page"
                 >
@@ -102,6 +122,31 @@ const Header = () => {
                   <b>Wellness</b>
                 </Link>
               </li>
+              <div className="main">
+                {isConnected && (
+                  <div
+                    className="connected-msg text-white hover:text-[#E3FED8] bg-[#35B226] py-2 px-5 rounded-lg"
+                    color="light"
+                  >
+                    {address}
+                  </div>
+                )}
+                {!isConnected &&
+                  connectors.map((connector) => (
+                    <button
+                      className="connect-btn text-white bg-[#35B226] py-2 px-5 rounded-lg hover:text-[#E3FED8]"
+                      disabled={!connector.ready}
+                      key={connector.id}
+                      onClick={() => connect({ connector })}
+                    >
+                      Connect {connector.name}
+                      {isLoading &&
+                        pendingConnector?.id === connector.id &&
+                        " (connecting)"}
+                    </button>
+                  ))}
+                {/* {error && <div className="text-[#E3FED8]">{error.message}</div>} */}
+              </div>
             </ul>
           </div>
         </div>
