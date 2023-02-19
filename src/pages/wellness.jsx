@@ -2,8 +2,11 @@ import Head from "next/head";
 import Title from "@/components/title";
 import SubTitle from "@/components/sub-title";
 import GoalCard from "@/components/goal-card";
+import { useNumberStore } from "@/utils/verify";
 
 function Wellness() {
+  const number = useNumberStore((state) => state.number);
+  console.log(number);
   return (
     <>
       <Head>

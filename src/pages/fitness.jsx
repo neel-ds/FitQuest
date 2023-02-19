@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Link from "next/link";
 import Title from "@/components/title";
 import SubTitle from "@/components/sub-title";
 import GoalCard from "@/components/goal-card";
@@ -8,40 +7,40 @@ import { ethers } from "ethers";
 import { useSigner, useAccount } from "wagmi";
 import { useState, useEffect } from "react";
 import { getSteps } from "@/utils/getSteps";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { useRef } from "react";
+import { useNumberStore } from "@/utils/verify";
 
 function Fitness() {
   const signer = useSigner();
   const { address } = useAccount();
-
-  const generateBtn = document.getElementById("generate-btn");
-  const modal = document.getElementById("myModal");
-  const closeModal = document.getElementById("modal-close");
-  const randomNumber = document.getElementById("random-number");
+  const [randomNumber, setRandomNumber] = useState();
+  const {number, setNumber} = useNumberStore();
 
   // Function to generate random 6-digit number
   function generateRandomNumber() {
     return Math.floor(Math.random() * 900000) + 100000;
   }
 
-  // Event listener for generate button
-  generateBtn.addEventListener("click", function () {
-    const number = generateRandomNumber();
-    randomNumber.textContent = number;
-    modal.classList.remove("hidden");
-  });
+  function generateBtn() {
+    const rndNumber = generateRandomNumber();
+    setRandomNumber(rndNumber);
+    setNumber(rndNumber);
+    onOpen();
+  }
 
-  // Event listener for close
-  // Event listener for close button
-  closeModal.addEventListener("click", function () {
-    modal.classList.add("hidden");
-  });
-
-  // Event listener for clicking outside the modal content
-  window.addEventListener("click", function (event) {
-    if (event.target == modal) {
-      modal.classList.add("hidden");
-    }
-  });
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const finalRef = useRef(null);
 
   // https://steps-api.up.railway.app/
   async function updateSubscription(id, address, shares) {
@@ -164,72 +163,31 @@ function Fitness() {
               </div>
               <div className="flex justify-center">
                 <button
-                  id="generate-btn"
+                  onClick={generateBtn}
                   class="bg-[#08EA70] text-[#4F4F4F] font-bold py-2.5 px-5 rounded-full hover:shadow-md hover:shadow-[#E3FED8]/30 mt-10"
                 >
                   Start journey
                 </button>
-                <div
-                  id="myModal"
-                  class="fixed z-10 inset-0 overflow-y-auto hidden"
+                <Modal
+                  finalFocusRef={finalRef}
+                  isOpen={isOpen}
+                  onClose={onClose}
                 >
-                  <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                    <div class="fixed inset-0 transition-opacity">
-                      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                    </div>
-                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-                    &#8203;
-                    <div class="inline-block align-bottom bg-black/80 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                      <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                          <svg
-                            class="h-6 w-6 text-green-600"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M5 13l4 4L19 7"
-                            ></path>
-                          </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                          <h3
-                            class="text-lg leading-6 font-medium text-gray-50"
-                            id="modal-title"
-                          >
-                            Verification
-                          </h3>
-                          <div class="mt-2">
-                            <p class="text-sm text-gray-100">
-                              Here&apos;s your verification 6-digit number:
-                            </p>
-                            <p
-                              class="text-3xl font-bold text-gray-50"
-                              id="random-number"
-                            >
-                              ...
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                        <button
-                          type="button"
-                          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#35B226] text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-                          id="modal-close"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Verification</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <p>Here&apos;s your verification 6-digit number:</p>
+                      <p>{randomNumber}</p>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button colorScheme="green" mr={3} onClick={onClose}>
+                        Close
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </div>
             </div>
           </div>
