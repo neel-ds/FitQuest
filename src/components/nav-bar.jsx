@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { useAccount, useConnect } from "wagmi";
+import { useToast } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -13,6 +15,18 @@ const Header = () => {
     useConnect();
 
   const { pathname } = useRouter();
+
+  const toast = useToast();
+  const walletError = useEffect(() => {
+    if (!error) return;
+    toast({
+      title: "Wallet Error",
+      description: error?.message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+  }, [error]);
 
   return (
     <>
@@ -45,7 +59,7 @@ const Header = () => {
               isOpenMenu ? "block" : "hidden"
             } justify-between items-center w-full md:flex md:w-auto md:order-1`}
           >
-            <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+            <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium items-center">
               <li></li>
               <li>
                 <Link
@@ -110,25 +124,28 @@ const Header = () => {
               </li>
               <div className="main">
                 {isConnected && (
-                  <div className="connected-msg" color="white">
-                    Connected to {connector?.name} with address {address}
+                  <div
+                    className="connected-msg text-white hover:text-[#E3FED8] bg-[#35B226] py-2 px-5 rounded-lg"
+                    color="light"
+                  >
+                    {address}
                   </div>
                 )}
                 {!isConnected &&
                   connectors.map((connector) => (
                     <button
-                      className="connect-btn"
+                      className="connect-btn text-white bg-[#35B226] py-2 px-5 rounded-lg hover:text-[#E3FED8]"
                       disabled={!connector.ready}
                       key={connector.id}
                       onClick={() => connect({ connector })}
                     >
-                      Connect to {connector.name}
+                      Connect {connector.name}
                       {isLoading &&
                         pendingConnector?.id === connector.id &&
                         " (connecting)"}
                     </button>
                   ))}
-                {error && <div>{error.message}</div>}
+                {/* {error && <div className="text-[#E3FED8]">{error.message}</div>} */}
               </div>
             </ul>
           </div>

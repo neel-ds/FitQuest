@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const Title = ({ title }) => {
   return (
@@ -7,11 +7,11 @@ const Title = ({ title }) => {
         {title}
       </h1>
     </div>
-  )
-}
+  );
+};
 
-export default Title
+export default Title;
 
 Title.defaultProps = {
-  title: '',
-}
+  title: "",
+};

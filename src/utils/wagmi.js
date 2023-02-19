@@ -1,4 +1,3 @@
-
 import { ArcanaConnector } from "@arcana/auth-wagmi";
 import { polygon, polygonMumbai } from "wagmi/chains";
 import { configureChains, createClient, Chain } from "wagmi";
