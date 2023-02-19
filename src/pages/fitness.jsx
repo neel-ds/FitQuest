@@ -108,14 +108,14 @@ const steps = stepsCount != 0 ? stepsCount : 1000;
   useEffect(() => {
   console.log("scdkd",rndNumber);
    console.log("number is",number);
-  const getStepsCount = async() => { 
-    getSteps(number).then((items) => {
-        console.log(items.stepsCount);
-        setStepsCount(items.stepsCount);        
-    });}
-  getStepsCount();
+  // const getStepsCount = async() => { 
+  //   getSteps(number).then((items) => {
+  //       console.log(items.stepsCount);
+  //       setStepsCount(items.stepsCount);        
+  //   });}
+  // getStepsCount();
   const intervalId = setInterval(() => {
-    getStepsCount()
+    // getStepsCount()
   }, 30000)
     return () => {clearInterval(intervalId)};
  
